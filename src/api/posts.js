@@ -5,3 +5,9 @@ export async function getAllPosts () {
 
   return data
 }
+
+export async function createPost ({ post }) {
+  const { data } = await supabase.from('post').insert(post)
+
+  return data
+}
