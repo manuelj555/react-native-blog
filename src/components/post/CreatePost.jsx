@@ -6,6 +6,7 @@ import { router } from 'expo-router'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { FormInput } from '../ui/form/FormInput'
+import { useAuth } from '../../hooks/auth'
 
 const postSchema = z.object({
   title: z.coerce.string().min(1, 'Por favor, indique el título del post'),
@@ -15,6 +16,7 @@ const postSchema = z.object({
 }).passthrough()
 
 export function CreatePost () {
+  const { user } = useAuth()
   const { control, handleSubmit } = useForm({
     resolver: zodResolver(postSchema),
     defaultValues: {
@@ -35,6 +37,10 @@ export function CreatePost () {
     } catch (error) {
       console.error(error)
     }
+  }
+
+  if (!user) {
+    return null
   }
 
   return (

@@ -26,7 +26,6 @@ export function PostLoading () {
 
   useEffect(() => {
     const time = Math.round((Math.random() * 200) + 500)
-    console.log({ time })
     opacity.value = withRepeat(withTiming(0.6, {
       duration: time
     }), null, true)
