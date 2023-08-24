@@ -1,26 +1,34 @@
 import React from 'react'
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native'
-import { Controller, useForm } from 'react-hook-form'
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from 'react-native'
+import { useForm } from 'react-hook-form'
 import { useCreatePost } from '../../hooks/post'
 import { router } from 'expo-router'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { FieldError } from '../ui/form/FieldError'
+import { FormInput } from '../ui/form/FormInput'
 
 const postSchema = z.object({
   title: z.coerce.string().min(1, 'Por favor, indique el título del post'),
   content: z.coerce.string()
     .min(1, 'Por favor, agregue contenido al post')
-    .min(10, 'Este contenido es muy corto para poder públicarlo'),
-})
+  // .min(10, 'Este contenido es muy corto para poder públicarlo')
+}).passthrough()
 
-export function CreatePost ({}) {
-  const { control, handleSubmit, formState: { errors } } = useForm({
-    resolver: zodResolver(postSchema)
+export function CreatePost () {
+  const { control, handleSubmit } = useForm({
+    resolver: zodResolver(postSchema),
+    defaultValues: {
+      title: '',
+      content: '',
+    }
   })
   const { create, isCreating } = useCreatePost()
 
   async function handleCreatePress (data) {
+    console.log('Según es valido')
+    console.log({ data })
+    return
+
     try {
       await create(data)
       router.push('/')
@@ -29,48 +37,24 @@ export function CreatePost ({}) {
     }
   }
 
-  console.log(errors)
-
   return (
-    <ScrollView className="px-2 mt-4">
-      <KeyboardAvoidingView className="gap-3" behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <View className="flex flex-col">
-          <Text>Título</Text>
-          <Controller
-            control={control}
-            render={({ field }) => (
-              <TextInput
-                className="bg-gray-50 rounded px-2 py-1"
-                placeholder="Post Title"
-                value={field.value}
-                onChangeText={field.onChange}
-                onBlur={field.onBlur}
-              />
-            )}
-            name="title"
-          />
-          <FieldError errors={errors} name="title"/>
-        </View>
-        <View className="flex flex-col">
-          <Text>Contenido</Text>
-          <Controller
-            control={control}
-            render={({ field }) => (
-              <TextInput
-                multiline
-                numberOfLines={5}
-                textAlignVertical="top"
-                className="bg-gray-50 rounded px-2 py-1"
-                placeholder="Post Content"
-                value={field.value}
-                onChangeText={field.onChange}
-                onBlur={field.onBlur}
-              />
-            )}
-            name="content"
-          />
-          <FieldError errors={errors} name="content"/>
-        </View>
+    <KeyboardAvoidingView className="flex-1 mt-4" behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <ScrollView contentContainerStyle={{ gap: 12, paddingHorizontal: 6 }}>
+        <FormInput
+          title="Título"
+          name="title"
+          control={control}
+          placeholder="Título del post"
+        />
+        <FormInput
+          title="Contenido"
+          name="content"
+          control={control}
+          placeholder="Contenido del post"
+          multiline
+          numberOfLines={5}
+          textAlignVertical="top"
+        />
         <View className="flex flex-row justify-end pt-3">
           <Pressable
             disabled={isCreating}
@@ -84,7 +68,7 @@ export function CreatePost ({}) {
             </Text>
           </Pressable>
         </View>
-      </KeyboardAvoidingView>
-    </ScrollView>
+      </ScrollView>
+    </KeyboardAvoidingView>
   )
 }
