@@ -1,9 +1,9 @@
 import React from 'react'
 import { Text } from 'react-native'
 import { get } from 'react-hook-form'
-import Animated, { FadeOutRight, FlipInXUp } from 'react-native-reanimated'
+import Animated, { BounceInRight, FadeOutRight } from 'react-native-reanimated'
 
-export function FieldError ({ errors, name }) {
+export function FieldError ({ errors, name, errorAsBlock = false }) {
   const error = get(errors, name)
 
   if (!error) {
@@ -14,11 +14,11 @@ export function FieldError ({ errors, name }) {
 
   return (
     <Animated.View
-      className="px-2 py-1 bg-red-500 rounded my-1"
-      entering={FlipInXUp}
+      className={`${errorAsBlock ? 'bg-red-500 rounded px-2' : ''} py-1 my-1`}
+      entering={BounceInRight}
       exiting={FadeOutRight}
     >
-      <Text className="text-white">{message}</Text>
+      <Text className={`${errorAsBlock ? 'text-white' : 'text-red-600'}`}>{message}</Text>
     </Animated.View>
   )
 }

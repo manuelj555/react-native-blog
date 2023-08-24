@@ -8,6 +8,7 @@ export function FormInput ({
   name,
   control,
   render = null,
+  errorAsBlock = false,
   ...inputProps
 }) {
   const { field, formState: { errors } } = useController({ name, control })
@@ -18,14 +19,15 @@ export function FormInput ({
       {render && render(field)}
       {!render && (
         <TextInput
-          className="bg-gray-50 rounded px-2 py-1"
+          className="bg-gray-50 rounded px-2 py-1 border border-gray-300"
           value={field.value}
           onChangeText={field.onChange}
           onBlur={field.onBlur}
+          returnKeyType="next"
           {...inputProps}
         />
       )}
-      <FieldError errors={errors} name={name}/>
+      <FieldError errors={errors} name={name} errorAsBlock={errorAsBlock}/>
     </View>
   )
 }

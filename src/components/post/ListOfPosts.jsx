@@ -1,5 +1,5 @@
 import React from 'react'
-import { ScrollView, View } from 'react-native'
+import { FlatList, ScrollView, View } from 'react-native'
 import { useGetPosts } from '../../hooks/post'
 import { Post, PostLoading } from './Post'
 import { AddPostButton } from '../ui/AddPostButton'
@@ -8,16 +8,15 @@ export function ListOfPosts ({}) {
   const { posts } = useGetPosts()
 
   return (
-    <View>
-      <ScrollView className="p-2">
-        {posts?.map(post => (
-          <Post key={post.id} post={post}/>
-        ))}
-
-        <View className="mt-4 items-start">
-          <AddPostButton/>
-        </View>
-      </ScrollView>
+    <View className='mb-4'>
+      <FlatList
+        className="p-2"
+        data={posts}
+        renderItem={({ item: post }) => (
+          <Post post={post}/>
+        )}
+        keyExtractor={post => post.id}
+      />
     </View>
   )
 }

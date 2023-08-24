@@ -2,7 +2,7 @@ import React from 'react'
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from 'react-native'
 import { useForm } from 'react-hook-form'
 import { useCreatePost } from '../../hooks/post'
-import { router } from 'expo-router'
+import { Redirect, router } from 'expo-router'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { FormInput } from '../ui/form/FormInput'
@@ -17,6 +17,7 @@ const postSchema = z.object({
 
 export function CreatePost () {
   const { user } = useAuth()
+  console.log({ user })
   const { control, handleSubmit } = useForm({
     resolver: zodResolver(postSchema),
     defaultValues: {
@@ -39,9 +40,7 @@ export function CreatePost () {
     }
   }
 
-  if (!user) {
-    return null
-  }
+  if (!user) return <Redirect href="/login"/>
 
   return (
     <KeyboardAvoidingView className="flex-1 mt-4" behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
