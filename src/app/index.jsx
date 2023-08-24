@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { Stack } from 'expo-router'
-import { ListOfPosts } from '../components/post/ListOfPosts'
+import { ListOfPosts, ListOfPostsLoading } from '../components/post/ListOfPosts'
 import { ScreenLayout } from '../components/ui/ScreenLayout'
 
 export default function IndexScreen () {
@@ -8,7 +8,9 @@ export default function IndexScreen () {
     <ScreenLayout
       screen={<Stack.Screen options={{ title: 'My Blog Page' }}/>}
     >
-      <ListOfPosts/>
+      <Suspense fallback={<ListOfPostsLoading/>}>
+        <ListOfPosts/>
+      </Suspense>
     </ScreenLayout>
   )
 }
